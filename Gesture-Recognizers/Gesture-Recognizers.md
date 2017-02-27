@@ -169,7 +169,7 @@ enum UITouchPhase : Int {
 
 3. 窗口将一个处于 `Ended` 阶段的 `UITouch` 对象通过 `touchesEnded(_:withEvent:)` 方法派发给手势识别器，此时手势识别器还是缺乏足够的信息来识别手势，因此状态还是 `Possible`。但是，这一次窗口并没有继续向视图派发该对象，而是将其扣留了。
 
-4. 窗口将另一个处于 `Ended` 阶段的 `UITouch` 对象通过 `touchesEnded(_:withEvent:)` 方法派发给手势识别器。此时手势识别器终于收集到了足够的信息，识别了这个双指轻击手势，因此状态进入 `Recognized`。接着，窗口向视图发送 `touchesCancelled(_:withEvent:)` 消息，取消了视图对这次双指轻击触摸事件的处理。也就是说，视图只收到了 `touchesBegan(_:withEvent:)` 和 `touchesMoved(_:withEvent:)` 消息，经过漫长等待，不但没有等到被扣留的 `touchesEnded(_:withEvent:)` 消息，而且最终却等来了 `touchesCancelled(_:withEvent:)` 消息，对于视图来说，这次触摸事件的处理被取消了。
+4. 窗口将另一个处于 `Ended` 阶段的 `UITouch` 对象通过 `touchesEnded(_:withEvent:)` 方法派发给手势识别器。此时手势识别器终于收集到了足够的信息，识别了这个双指轻击手势，因此状态进入 `Recognized`。接着，窗口向视图发送 `touchesCancelled(_:withEvent:)` 消息，取消了视图对这次双指轻击触摸事件的处理。也就是说，视图只收到了 `touchesBegan(_:withEvent:)` 和 `touchesMoved(_:withEvent:)` 消息，经过短暂的等待，视图并没有等到被扣留的 `touchesEnded(_:withEvent:)` 消息，最终只会收到 `touchesCancelled(_:withEvent:)` 消息。因此对于视图来说，这次触摸事件的处理被取消了。
 
 假如手势识别器在最后还是没有识别出手势，由 `Possible` 状态转为 `Failed` 状态，那么窗口此时才会将两个处于 `Ended` 阶段的 `UITouch` 对象通过 `touchesEnded(_:withEvent:)` 方法派发给视图。
 
