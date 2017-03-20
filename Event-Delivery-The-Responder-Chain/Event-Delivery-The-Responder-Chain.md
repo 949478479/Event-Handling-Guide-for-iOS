@@ -1,23 +1,22 @@
 # 事件传递：响应者链条
 
-- [通过 hit-testing 过程找出被触摸的视图](#Hit-Testing Returns the View Where a Touch Occurred)
-<a name="Hit-Testing Returns the View Where a Touch Occurred"></a>
-- [由响应者对象组成的响应者链条](#The Responder Chain Is Made Up of Responder Objects)
-- [事件在响应者链条上的传递路径](#The Responder Chain Follows a Specific Delivery Path)
+- [通过 hit-testing 过程找出被触摸的视图](#Hit_Testing_Returns_the_View_Where_a_Touch_Occurred)
+- [由响应者对象组成的响应者链条](#The_Responder_Chain_Is_Made_Up_of_Responder_Objects)
+- [事件在响应者链条上的传递路径](#The_Responder_Chain_Follows_a_Specific_Delivery_Path)
 
 当用户触发一个事件时，例如触摸事件、晃动事件或者远程控制事件，`UIKit` 就会将事件的各种信息包装在 `UIEvent` 对象里，并放入应用程序的事件队列中。封装了事件信息的 `UIEvent` 对象会沿着特定的路线传递，直到某个对象着手处理它。最初，`UIApplication` 单例对象会从事件队列中接收 `UIEvent` 对象并开始进行传递。通常，它会将事件传递给主窗口，主窗口会进一步将事件传递给某个能处理该事件的对象，这取决于事件的类型。
 
 - 触摸事件
 
-    对于触摸事件，主窗口对象会试图将该事件传递给被触摸的视图。被触摸的视图被称为 `hit-test` 视图，查找该视图的过程被称为 `hit-testing`，详情参阅【[通过 Hit-Testing 找出被触摸的视图](#Hit-Testing Returns the View Where a Touch Occurred)】。
+    对于触摸事件，主窗口对象会试图将该事件传递给被触摸的视图。被触摸的视图被称为 `hit-test` 视图，查找该视图的过程被称为 `hit-testing`，详情参阅【[通过 Hit-Testing 找出被触摸的视图](#Hit_Testing_Returns_the_View_Where_a_Touch_Occurred)】。
 
 - 运动事件与远程控制事件
 	
-    主窗口会将这类事件传递给第一响应者来处理，详情参阅【[由响应者对象组成的响应者链条](#The Responder Chain Is Made Up of Responder Objects)】。
+    主窗口会将这类事件传递给第一响应者来处理，详情参阅【[由响应者对象组成的响应者链条](#The_Responder_Chain_Is_Made_Up_of_Responder_Objects)】。
 
 事件传递的最终目的是找出一个能处理并响应事件的对象。`UIKit` 会将事件传递给最适合处理该事件的对象，对于触摸事件，该对象往往是被触摸的视图；对于其他事件，该对象往往是第一响应者。
 
-
+<a name="Hit_Testing_Returns_the_View_Where_a_Touch_Occurred"></a>
 ## 通过 hit-testing 过程找出被触摸的视图
 
 `iOS` 通过 `hit-testing` 过程来找出被触摸的视图。该过程会检查触摸点是否位于相关视图的范围之内。如果触摸点位于视图范围内，则进一步对其子视图执行检查过程，最终，触摸点所在的视图层级最底层的视图（对于界面来说是最上层的视图）将成为 `hit-test` 视图，`iOS` 会将触摸事件传递给该视图进行处理。
@@ -59,9 +58,9 @@ class UIView: UIResponder {
 
 这里需要注意一点，如果某个子视图的一部分位于父视图范围之外，在父视图的 `clipsToBounds` 属性关闭的情况下，超出父视图范围的这部分子视图不会被裁剪掉，但是此时触摸该子视图位于父视图之外的部分将没有任何反应。因为按照上面所述的判断过程，判断到父视图时，由于触摸点根本不在父视图范围内，也就不会进一步去判断子视图了。
 
-`hit-test` 视图拥有最先处理触摸事件的机会，之后，还可以选择将触摸事件沿响应者链条传递给下一个响应者，例如 `hit-test` 视图的父视图。默认情况下，触摸事件被处理后不会传递给下一个响应者。详情参阅【[由响应者对象组成的响应者链条](#The Responder Chain Is Made Up of Responder Objects)】。
+`hit-test` 视图拥有最先处理触摸事件的机会，之后，还可以选择将触摸事件沿响应者链条传递给下一个响应者，例如 `hit-test` 视图的父视图。默认情况下，触摸事件被处理后不会传递给下一个响应者。详情参阅【[由响应者对象组成的响应者链条](#The_Responder_Chain_Is_Made_Up_of_Responder_Objects)】。
 
-<a name="The Responder Chain Is Made Up of Responder Objects"></a>
+<a name="The_Responder_Chain_Is_Made_Up_of_Responder_Objects"></a>
 ## 由响应者对象组成的响应者链条
 
 很多类型的事件都依赖于响应者链条进行传递。顾名思义，响应者链条即是一系列响应者对象链接在一起，开始于第一响应者对象，结束于 `UIApplication` 单例对象（实际上往往结束于它的代理对象）。如果第一响应者无法处理事件，事件就会沿响应者链条往下传递，即传递给下一个响应者。
@@ -104,7 +103,7 @@ class UIView: UIResponder {
 
 当用户点击 `UITextField` 或者 `UITextView` 后，它们会自动成为第一响应者，而其他响应者则需通过接收 `becomeFirstResponder()` 消息来成为第一响应者。
 
-<a name="The Responder Chain Follows a Specific Delivery Path"></a>
+<a name="The_Responder_Chain_Follows_a_Specific_Delivery_Path"></a>
 ## 事件在响应者链条上的传递路径
 
 如果某个应该处理事件的响应者（无论是 `hit-test` 视图还是第一响应者）不处理事件，`UIKit` 就会将事件沿着响应者链条向下传递，直到找到处理事件的响应者，或者再没有下一个响应者。每个响应者都可以决定是否处理传给自己的事件，以及是否将事件传递给下一个响应者，即 `nextResponder` 属性所引用的响应者。
