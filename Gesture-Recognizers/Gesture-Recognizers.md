@@ -6,15 +6,15 @@
 
 参考文档 [Event Handling Guide for iOS](https://developer.apple.com/library/ios/documentation/EventHandling/Conceptual/EventHandlingiPhoneOS/Introduction/Introduction.html#//apple_ref/doc/uid/TP40009541-CH1-SW1) 之 [Gesture Recognizers](https://developer.apple.com/library/ios/documentation/EventHandling/Conceptual/EventHandlingiPhoneOS/GestureRecognizer_basics/GestureRecognizer_basics.html#//apple_ref/doc/uid/TP40009541-CH2-SW2)。
 
-- [手势识别器的多种状态](#Gesture Recognizers Operate in a Finite State Machine)
-- [手势识别器间的相互影响](#Interacting with Other Gesture Recognizers)
-- [手势识别器和某些控件间的相互影响](#Interacting with Other User Interface Controls)
-- [触摸事件的表示与传递](#Touch-Handling Methods & UITouch)
-- [手势识别器优先于所属视图处理触摸事件](#Gesture Recognizers Get the First Opportunity to Recognize a Touch)
-- [改变触摸事件的派发时机](#Affecting the Delivery of Touches to Views)
-- [自定义手势识别器](#Creating a Custom Gesture Recognizer)
+- [手势识别器的多种状态](#Gesture_Recognizers_Operate_in_a_Finite_State_Machine)
+- [手势识别器间的相互影响](#Interacting_with_Other_Gesture_Recognizers)
+- [手势识别器和某些控件间的相互影响](#Interacting_with_Other_User_Interface_Controls)
+- [触摸事件的表示与传递](#Touch-Handling_Methods_&_UITouch)
+- [手势识别器优先于所属视图处理触摸事件](#Gesture_Recognizers_Get_the_First_Opportunity_to_Recognize_a_Touch)
+- [改变触摸事件的派发时机](#Affecting_the_Delivery_of_Touches_to_Views)
+- [自定义手势识别器](#Creating_a_Custom_Gesture_Recognizer)
 
-<a name="Gesture Recognizers Operate in a Finite State Machine"></a>
+<a name="Gesture_Recognizers_Operate_in_a_Finite_State_Machine"></a>
 ## 手势识别器的多种状态
 
 手势识别器具有多种状态，通过 `state` 属性表示，根据手势是否是连续型手势（例如拖拽手势），这些状态又有所不同，如下图所示：
@@ -42,7 +42,7 @@ enum UIGestureRecognizerState : Int {
 }
 ```
 
-<a name="Interacting with Other Gesture Recognizers"></a>
+<a name="Interacting_with_Other_Gesture_Recognizers"></a>
 ## 手势识别器间的相互影响
 
 手势识别器需绑定到 `UIView` 上，同一个 `UIView` 可以绑定多个手势识别器，但每个手势识别器只能对应一个 `UIView`。可以通过 `UIView` 的 `addGestureRecognizer(_:)` 方法绑定一个手势识别器，通过 `removeGestureRecognizer(_:)` 方法移除手势识别器，通过 `gestureRecognizers` 属性获取其绑定的所有手势识别器。
@@ -112,7 +112,7 @@ func shouldBeRequiredToFailByGestureRecognizer(otherGestureRecognizer: UIGesture
 
 例如，单击手势不应阻止双击手势，旋转手势应该阻止捏合手势等等。
 
-<a name="Interacting with Other User Interface Controls"></a>
+<a name="Interacting_with_Other_User_Interface_Controls"></a>
 ## 手势识别器和某些控件间的相互影响
 
 iOS 6 之后，一些 UI 控件会覆盖掉手势识别器。例如，对于 `UIButton`，如果往其父视图添加轻击手势识别器，点击按钮的位置，只会触发按钮的方法，并不会触发轻击手势识别器。
@@ -123,7 +123,7 @@ iOS 6 之后，一些 UI 控件会覆盖掉手势识别器。例如，对于 `UI
 
 根据文档建议，可以将手势识别器直接添加到控件上，而不是父视图上，但是这样会覆盖控件原有的功能。
 
-<a name="Touch-Handling Methods & UITouch"></a>
+<a name="Touch-Handling_Methods_&_UITouch"></a>
 ## 触摸事件的表示与传递
 
 当用户用手指触摸屏幕时，触摸事件开始，当最后一根手指离开屏幕时，触摸事件结束。触摸事件被封装为 `UITouch` 对象，每根手指对应一个。系统会实时跟踪触摸事件，并及时更新 `UITouch` 对象来反映当前触摸事件。在触摸过程中，系统通过 `UIResponder` 中定义的如下四个方法沿着响应链来传递触摸事件：
@@ -150,7 +150,7 @@ enum UITouchPhase : Int {
 需要注意的是，这些方法和手势识别器的各种状态并无必然联系，例如 `touchesBegan(_:withEvent:)` 方法未必就对应手势识别器的 `Began` 状态，手势识别器的各种状态仅仅表示手势识别器本身的状态。
 
 
-<a name="Gesture Recognizers Get the First Opportunity to Recognize a Touch"></a>
+<a name="Gesture_Recognizers_Get_the_First_Opportunity_to_Recognize_a_Touch"></a>
 ## 手势识别器优先于所属视图处理触摸事件
 
 前面提到过，手势识别器会优先于所属的视图来处理触摸事件，如下图所示：
@@ -175,7 +175,7 @@ enum UITouchPhase : Int {
 
 上面举的是非连续型手势的例子，连续型手势与之类似，不过手势识别器可能会在触摸过程进入 `Ended` 阶段前就识别出手势。一旦手势识别，手势识别器就会由 `Possible` 状态进入 `Began` 状态，然后继续之后的一系列状态。
 
-<a name="Affecting the Delivery of Touches to Views"></a>
+<a name="Affecting_the_Delivery_of_Touches_to_Views"></a>
 ## 改变触摸事件的派发时机
 
 `UIGestureRecognizer` 提供了如下三个属性，可以改变上面所述的派发过程：
@@ -188,7 +188,7 @@ enum UITouchPhase : Int {
 
 另外，如果手势识别器发现当前触摸事件不是自己需要的，可以通过 `ignoreTouch(_:forEvent:)` 方法忽略掉，这会将触摸事件派发给手势识别器所在的视图，也就意味着视图不会收到 `touchesCancelled(_:withEvent:)` 消息而被取消触摸处理。
 
-<a name="Creating a Custom Gesture Recognizer"></a>
+<a name="Creating_a_Custom_Gesture_Recognizer"></a>
 ## 自定义手势识别器
 
 自定义手势识别器时需要导入如下头文件：
